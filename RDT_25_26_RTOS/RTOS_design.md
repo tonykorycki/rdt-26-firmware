@@ -1,6 +1,6 @@
-# RTOS Firmware — Architecture and Design
+# RTOS Firmware - Architecture and Design
 
-Complete FreeRTOS port of the RDT 2025–26 rover firmware for Teensy 4.1. All design goals met and verified. A stretch goal that was not met was stall detection through the current sensors, which proved challenging due to noise, calibration issues and insufficient data, and was deprioritized in favor of robust safety and deterministic timing. Sensor specific contants might be out of sync with the hardware, but should be easy to set and update in `rtos_config.h`.
+Complete FreeRTOS port of the RDT 2025–26 rover firmware for Teensy 4.1. All design goals met and verified. A stretch goal that was not met was stall detection through the current sensors, which proved challenging due to noise, calibration issues, and insufficient data, and was deprioritized in favor of robust safety and deterministic timing. Sensor-specific constants might be out of sync with the hardware, but should be easy to set and update in `rtos_config.h`.
 
 The firmware is structured around a set of FreeRTOS tasks and ISRs, with clear ownership of shared data and synchronization primitives. The architecture emphasizes safety, real-time performance, and maintainability, while ensuring backward compatibility with the existing command protocol.
 
@@ -21,7 +21,7 @@ The firmware is structured around a set of FreeRTOS tasks and ISRs, with clear o
 1. Stepper pulse timing is owned by a hardware `IntervalTimer` ISR
 2. The I2C receive ISR stays minimal: one queue push per byte, nothing else.
 3. Commands are decoded into a normalized `DesiredState` struct rather than calling subsystem functions directly from the ISR path.
-4. `SafetyTask` is the sole writer of the `egSafetyBits` event group, no other code sets safety bits.
+4. `SafetyTask` is the sole writer of the `egSafetyBits` event group; no other code sets safety bits.
 5. Actuator tasks check safety bits every cycle and enforce zero output on any active stop.
 6. While the hardware kill-switch is active, only `GRP_CONTROL` and `GRP_DATA` are accepted; all motion and mechanism groups are silently rejected and counted.
 
