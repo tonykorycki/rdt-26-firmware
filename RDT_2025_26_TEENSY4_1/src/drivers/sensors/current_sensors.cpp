@@ -1,0 +1,38 @@
+#include <Arduino.h>
+#include "config.h"
+#include "current_sensors.h"
+
+static float buffer[NUM_CURRENT_SENSORS] = {0};
+static int current_read_index = 0;
+static unsigned long last_channel_switch_ms = 0;
+
+void CURRENT_SENSORS_Init() {
+    analogReadResolution(10); 
+    pinMode(CURRENT_INPUT_PIN, INPUT);
+    pinMode(CURRENT_SELECT_PIN_0, OUTPUT);
+    pinMode(CURRENT_SELECT_PIN_1, OUTPUT);
+    pinMode(CURRENT_SELECT_PIN_2, OUTPUT);
+    
+    digitalWrite(CURRENT_SELECT_PIN_0, 0);
+    digitalWrite(CURRENT_SELECT_PIN_1, 0);
+    digitalWrite(CURRENT_SELECT_PIN_2, 0);
+    last_channel_switch_ms = millis();
+}
+
+void CURRENT_SENSORS_Update() {
+    unsigned long now = millis();
+    if (now - last_channel_switch_ms >= CHANNEL_SETTLE_MS) {
+        int rawValue = analogRead(CURRENT_INPUT_PIN);
+        buffer[current_read_index] = rawValue * CURRENT_SCALING;
+        if (++current_read_index == NUM_CURRENT_SENSORS) current_read_index = 0;
+        digitalWrite(CURRENT_SELECT_PIN_0, current_read_index & 0x01);
+        digitalWrite(CURRENT_SELECT_PIN_1, (current_read_index >> 1) & 0x01);
+        digitalWrite(CURRENT_SELECT_PIN_2, (current_read_index >> 2) & 0x01);
+        last_channel_switch_ms = now;
+    }
+}
+
+const float* CURRENT_SENSORS_GetBuffer() {
+    return buffer;
+}
+

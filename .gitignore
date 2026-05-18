@@ -1,0 +1,12 @@
+# PlatformIO build output
+.pio/
+
+# Editor settings
+.vscode/
+
+# macOS
+.DS_Store
+
+# PlatformIO local config (machine-specific, not for sharing)
+.pioenvs/
+.piolibdeps/
