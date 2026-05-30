@@ -3,6 +3,7 @@
 Embedded firmware for an autonomous lunar excavation rover competing in [NASA Lunabotics 2025–26](https://www.nasa.gov/learning-resources/lunabotics-challenge/) at Kennedy Space Center, represeting [@nyurdt](https://github.com/nyu-rdt). The rover excavates and deposits lunar regolith simulant under operator control. This repository contains the full embedded stack running on the rover's Teensy 4.1: I2C command reception, CAN-based actuator control, sensor acquisition, and a complete FreeRTOS port of the firmware. 
 
 The code in this repo was copied from the private electrical engineering repo to avoid sharing internal design docs and discussions, hardware files etc. but all relevant information about the architecture, design decisions, and development process is included in this doc and the `RDT_25_26_RTOS/RTOS_design.md` file.
+
 ---
 
 ## System Architecture
